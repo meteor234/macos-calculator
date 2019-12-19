@@ -5,7 +5,9 @@
     "emitDeclarationOnly": false,
     "allowJs": true,
     "outDir": "./build/",
-    "target": "es5",
+    "emitDecoratorMetadata": true,
+    "declaration": true,
+    "target": "esnext",
     "module": "es6",
     "moduleResolution": "node",
     "strict": true,
@@ -13,7 +15,7 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+
     "removeComments": true,
     "suppressImplicitAnyIndexErrors": true
   },

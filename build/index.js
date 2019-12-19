@@ -13,6 +13,9 @@ var Calculator = (function () {
         this.OPERATORS = ["÷", "×", "+", "-"];
         this.EXECUTE_FLAG = "=";
         this.CLEAR_FLAG = "AC";
+        this.calculator = "";
+        this.displayContainer = "";
+        this.resultElement = "";
         this.x = "";
         this.y = "";
         this.operator = "";
@@ -71,55 +74,57 @@ var Calculator = (function () {
             var className = target.className;
             if (className === "button") {
                 var key = target.textContent;
-                if (_this.NUMBERS.indexOf(key) > -1) {
-                    if (!_this.operator) {
-                        _this.x += key;
-                        _this.updateResult(_this.x);
+                if (typeof key === "string") {
+                    if (_this.NUMBERS.indexOf(key) > -1) {
+                        if (!_this.operator) {
+                            _this.x += key;
+                            _this.updateResult(_this.x);
+                        }
+                        else {
+                            _this.y += key;
+                            _this.updateResult(_this.y);
+                        }
                     }
-                    else {
-                        _this.y += key;
-                        _this.updateResult(_this.y);
+                    else if (_this.OPERATORS.indexOf(key) > -1) {
+                        if (_this.x === "" && _this.y === "") {
+                            _this.x = "0";
+                            _this.operator = key;
+                        }
+                        else if (_this.x !== "" && _this.y === "") {
+                            _this.operator = key;
+                        }
+                        else if (_this.x !== "" && _this.y !== "") {
+                            _this.result = _this.excuteAlgorithm();
+                            _this.updateResult(_this.result);
+                            _this.x = _this.result;
+                            _this.y = "";
+                            _this.operator = key;
+                        }
                     }
-                }
-                else if (_this.OPERATORS.indexOf(key) > -1) {
-                    if (_this.x === "" && _this.y === "") {
-                        _this.x = "0";
-                        _this.operator = key;
+                    else if (_this.EXECUTE_FLAG === key) {
+                        if (_this.x !== "" && _this.y === "") {
+                            _this.result = _this.x;
+                            _this.updateResult(_this.result);
+                        }
+                        else if (_this.x === "" && _this.y === "") {
+                            _this.result = "0";
+                            _this.updateResult(_this.result);
+                        }
+                        else if (_this.x !== "" && _this.y !== "") {
+                            _this.result = _this.excuteAlgorithm();
+                            _this.updateResult(_this.result);
+                            _this.x = _this.result;
+                            _this.y = "";
+                            _this.operator = "";
+                        }
                     }
-                    else if (_this.x !== "" && _this.y === "") {
-                        _this.operator = key;
-                    }
-                    else if (_this.x !== "" && _this.y !== "") {
-                        _this.result = _this.excuteAlgorithm();
-                        _this.updateResult(_this.result);
-                        _this.x = _this.result;
-                        _this.y = "";
-                        _this.operator = key;
-                    }
-                }
-                else if (_this.EXECUTE_FLAG === key) {
-                    if (_this.x !== "" && _this.y === "") {
-                        _this.result = _this.x;
-                        _this.updateResult(_this.result);
-                    }
-                    else if (_this.x === "" && _this.y === "") {
-                        _this.result = "0";
-                        _this.updateResult(_this.result);
-                    }
-                    else if (_this.x !== "" && _this.y !== "") {
-                        _this.result = _this.excuteAlgorithm();
-                        _this.updateResult(_this.result);
-                        _this.x = _this.result;
+                    else if (_this.CLEAR_FLAG === key) {
+                        _this.x = "";
                         _this.y = "";
                         _this.operator = "";
+                        _this.result = "";
+                        _this.updateResult("0");
                     }
-                }
-                else if (_this.CLEAR_FLAG === key) {
-                    _this.x = "";
-                    _this.y = "";
-                    _this.operator = "";
-                    _this.result = "";
-                    _this.updateResult("0");
                 }
             }
         });
@@ -137,6 +142,8 @@ var Calculator = (function () {
                 return "" + Number(this.x) * Number(this.y);
             case "÷":
                 return "" + Number(this.x) / Number(this.y);
+            default:
+                return "";
         }
     };
     Calculator.prototype.createElement = function (tag) {
